@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#050505" />
+  <title>STRIKEX Devnet Creator</title>
+  <style>
+    :root{--bg:#050505;--card:#111;--gold:#f5b942;--gold2:#ffd977;--txt:#fff;--muted:#aaa;--danger:#ff5f57;--ok:#49d17d}
+    *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at top,#1a1203 0,#050505 32%,#000 100%);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;min-height:100vh}
+    .wrap{max-width:760px;margin:auto;padding:24px 16px 44px}.hero{padding:24px 0 12px;text-align:center}.coin{width:108px;height:108px;border-radius:50%;display:grid;place-items:center;margin:0 auto 14px;border:3px solid var(--gold);box-shadow:0 0 40px #f5b94255;background:linear-gradient(145deg,#111,#1f1604);font-size:38px;font-weight:900}.hero h1{margin:0;font-size:32px;letter-spacing:.5px}.hero p{color:var(--muted);margin:8px 0}.badge{display:inline-block;margin-top:12px;padding:8px 12px;border-radius:999px;border:1px solid var(--gold);color:var(--gold2);font-weight:700;font-size:13px}
+    .card{background:rgba(18,18,18,.92);border:1px solid #2a2a2a;border-radius:20px;padding:18px;margin-top:14px;box-shadow:0 8px 40px #0008}.card h2{font-size:18px;margin:0 0 12px}.muted{color:var(--muted);font-size:14px;line-height:1.45}.row{display:flex;gap:10px;flex-wrap:wrap}.btn{appearance:none;border:0;border-radius:14px;padding:14px 16px;font-size:16px;font-weight:800;cursor:pointer;flex:1;min-width:160px}.primary{background:linear-gradient(135deg,var(--gold),#ffcf67);color:#111}.secondary{background:#202020;color:#fff;border:1px solid #343434}.danger{background:#2a1212;color:#ffb4ae;border:1px solid #5a2323}.btn:disabled{opacity:.45;cursor:not-allowed}.kv{display:grid;grid-template-columns:120px 1fr;gap:8px 12px;font-size:14px;margin-top:10px}.kv b{color:#ddd}.value{word-break:break-all;color:#fff}.status{margin-top:12px;padding:12px;border-radius:12px;background:#0b0b0b;border:1px solid #252525;font-size:14px;line-height:1.45}.ok{border-color:#1f6b3d;color:#bdf8d0}.warn{border-color:#71521c;color:#ffe3a6}.err{border-color:#712420;color:#ffc1bd}.small{font-size:12px}.check{display:flex;gap:10px;align-items:flex-start;margin-top:12px}.check input{margin-top:4px;transform:scale(1.2)}a{color:var(--gold2)}code{background:#0a0a0a;padding:2px 5px;border-radius:6px}.hidden{display:none}.footer{color:#777;text-align:center;font-size:12px;margin-top:24px}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="coin">SX</div>
+    <h1>STRIKEX <span style="color:var(--gold)">$SKX</span></h1>
+    <p>Creador de token de prueba en Solana</p>
+    <span class="badge">SOLANA DEVNET · SOLO PRUEBAS</span>
+  </div>
+
+  <div class="card">
+    <h2>1. Conectar Phantom</h2>
+    <p class="muted">La app nunca pide tu frase semilla ni tu clave privada. La firma se hace dentro de Phantom.</p>
+    <div class="row">
+      <button id="connectBtn" class="btn primary">Conectar Phantom</button>
+      <button id="openPhantomBtn" class="btn secondary">Abrir en Phantom</button>
+    </div>
+    <div id="walletStatus" class="status">Wallet no conectada.</div>
+  </div>
+
+  <div class="card">
+    <h2>2. Comprobar Devnet</h2>
+    <div class="kv">
+      <b>Wallet prevista</b><div class="value" id="expectedWallet">AVASekZ8no2HaJSbAahHkyt3nPuy6BZpSAX7t4Wev2AR</div>
+      <b>Wallet conectada</b><div class="value" id="connectedWallet">—</div>
+      <b>Saldo Devnet</b><div class="value" id="balance">—</div>
+      <b>Red</b><div class="value">Solana Devnet</div>
+    </div>
+    <div class="row" style="margin-top:14px">
+      <button id="refreshBtn" class="btn secondary" disabled>Actualizar saldo</button>
+      <button id="airdropBtn" class="btn secondary" disabled>Pedir SOL de Devnet</button>
+    </div>
+    <div id="mismatchBox" class="status warn hidden">
+      La wallet conectada no coincide con la prevista. Marca la casilla para continuar solo si reconoces esta wallet.
+      <label class="check"><input id="mismatchAck" type="checkbox"> <span>Confirmo que quiero usar esta wallet.</span></label>
+    </div>
+    <div id="networkStatus" class="status">Pendiente de conexión.</div>
+  </div>
+
+  <div class="card">
+    <h2>3. Crear STRIKEX de prueba</h2>
+    <div class="kv">
+      <b>Nombre</b><div>STRIKEX</div>
+      <b>Símbolo</b><div>SKX</div>
+      <b>Suministro</b><div>1.000.000.000 SKX</div>
+      <b>Decimales</b><div>9</div>
+      <b>Mint authority</b><div>Se revoca tras acuñar</div>
+      <b>Freeze authority</b><div>Se revoca</div>
+    </div>
+    <p class="muted">Esta versión crea el token SPL real en Devnet. El nombre/símbolo visual en wallets requiere metadatos adicionales y se añadirá en un paso posterior.</p>
+    <button id="createBtn" class="btn primary" style="width:100%;margin-top:8px" disabled>Crear STRIKEX en Devnet</button>
+    <div id="createStatus" class="status">Aún no se ha creado ningún token.</div>
+  </div>
+
+  <div id="resultCard" class="card hidden">
+    <h2>4. Resultado</h2>
+    <div class="kv">
+      <b>Mint</b><div class="value" id="mintAddress"></div>
+      <b>Transacción</b><div class="value" id="txSig"></div>
+    </div>
+    <div class="row" style="margin-top:14px">
+      <button id="copyMintBtn" class="btn secondary">Copiar mint</button>
+      <button id="copyTxBtn" class="btn secondary">Copiar firma</button>
+    </div>
+    <p class="muted small" style="margin-top:12px"><a id="explorerMint" target="_blank" rel="noreferrer">Ver token en Solana Explorer</a><br><a id="explorerTx" target="_blank" rel="noreferrer">Ver transacción</a></p>
+  </div>
+
+  <div class="footer">STRIKEX Devnet Creator · No usa dinero real · No crea liquidez ni mercados</div>
+</div>
+
+<script type="module">
+import { Connection, PublicKey, Keypair, Transaction, SystemProgram, LAMPORTS_PER_SOL } from 'https://esm.sh/@solana/web3.js@1.98.4';
+import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, MINT_SIZE, createInitializeMintInstruction, getAssociatedTokenAddress, createAssociatedTokenAccountInstruction, createMintToInstruction, createSetAuthorityInstruction, AuthorityType } from 'https://esm.sh/@solana/spl-token@0.4.14';
+
+const EXPECTED = 'AVASekZ8no2HaJSbAahHkyt3nPuy6BZpSAX7t4Wev2AR';
+const DECIMALS = 9;
+const SUPPLY_UI = 1_000_000_000n;
+const SUPPLY_RAW = SUPPLY_UI * 10n ** BigInt(DECIMALS);
+const connection = new Connection('https://api.devnet.solana.com','confirmed');
+let provider=null, wallet=null, balance=0, lastMint='', lastTx='';
+
+const $=id=>document.getElementById(id);
+function getProvider(){
+  if (window.phantom?.solana?.isPhantom) return window.phantom.solana;
+  if (window.solana?.isPhantom) return window.solana;
+  return null;
+}
+function fmtSol(v){return (v/LAMPORTS_PER_SOL).toFixed(4)+' SOL';}
+function setStatus(id,msg,kind=''){ const el=$(id); el.textContent=msg; el.className='status'+(kind?' '+kind:''); }
+function short(s){return s?s.slice(0,5)+'…'+s.slice(-5):'—';}
+function canCreate(){
+  const mismatch = wallet && wallet.toBase58()!==EXPECTED;
+  return !!wallet && balance>0.002*LAMPORTS_PER_SOL && (!mismatch || $('mismatchAck').checked);
+}
+function syncCreate(){ $('createBtn').disabled=!canCreate(); }
+
+async function connect(){
+  try{
+    provider=getProvider();
+    if(!provider){
+      setStatus('walletStatus','Phantom no está disponible en este navegador. Pulsa “Abrir en Phantom”.','warn'); return;
+    }
+    const r=await provider.connect();
+    wallet=new PublicKey(r.publicKey.toString());
+    $('connectedWallet').textContent=wallet.toBase58();
+    setStatus('walletStatus','Phantom conectado: '+short(wallet.toBase58()),'ok');
+    $('refreshBtn').disabled=false; $('airdropBtn').disabled=false;
+    const mismatch=wallet.toBase58()!==EXPECTED;
+    $('mismatchBox').classList.toggle('hidden',!mismatch);
+    await refresh();
+  }catch(e){ setStatus('walletStatus','Conexión cancelada o fallida: '+(e?.message||e),'err'); }
+}
+async function refresh(){
+  if(!wallet)return;
+  try{
+    balance=await connection.getBalance(wallet,'confirmed');
+    $('balance').textContent=fmtSol(balance);
+    setStatus('networkStatus','Devnet responde correctamente.','ok'); syncCreate();
+  }catch(e){setStatus('networkStatus','Error consultando Devnet: '+(e?.message||e),'err');}
+}
+async function airdrop(){
+  if(!wallet)return;
+  $('airdropBtn').disabled=true;
+  try{
+    setStatus('networkStatus','Solicitando 1 SOL de Devnet…');
+    const sig=await connection.requestAirdrop(wallet,LAMPORTS_PER_SOL);
+    await connection.confirmTransaction(sig,'confirmed');
+    await refresh();
+    setStatus('networkStatus','Airdrop de Devnet recibido.','ok');
+  }catch(e){
+    setStatus('networkStatus','El faucet de Devnet rechazó la solicitud. Prueba más tarde o usa el faucet oficial de Solana. '+(e?.message||''),'warn');
+  }finally{$('airdropBtn').disabled=false;}
+}
+async function createToken(){
+  if(!canCreate())return;
+  const ok=confirm('Vas a crear un token SOLO EN SOLANA DEVNET.\n\nNombre: STRIKEX\nSímbolo: SKX\nSuministro: 1.000.000.000\nDecimales: 9\nMint authority: revocada al final\nFreeze authority: revocada al final\n\n¿Continuar?');
+  if(!ok)return;
+  $('createBtn').disabled=true;
+  try{
+    setStatus('createStatus','Preparando transacción…');
+    const mint=Keypair.generate();
+    const rent=await connection.getMinimumBalanceForRentExemption(MINT_SIZE);
+    const ata=await getAssociatedTokenAddress(mint.publicKey,wallet,false,TOKEN_PROGRAM_ID,ASSOCIATED_TOKEN_PROGRAM_ID);
+    const tx=new Transaction();
+    tx.add(SystemProgram.createAccount({fromPubkey:wallet,newAccountPubkey:mint.publicKey,space:MINT_SIZE,lamports:rent,programId:TOKEN_PROGRAM_ID}));
+    tx.add(createInitializeMintInstruction(mint.publicKey,DECIMALS,wallet,wallet,TOKEN_PROGRAM_ID));
+    tx.add(createAssociatedTokenAccountInstruction(wallet,ata,wallet,mint.publicKey,TOKEN_PROGRAM_ID,ASSOCIATED_TOKEN_PROGRAM_ID));
+    tx.add(createMintToInstruction(mint.publicKey,ata,wallet,SUPPLY_RAW,[],TOKEN_PROGRAM_ID));
+    tx.add(createSetAuthorityInstruction(mint.publicKey,wallet,AuthorityType.MintTokens,null,[],TOKEN_PROGRAM_ID));
+    tx.add(createSetAuthorityInstruction(mint.publicKey,wallet,AuthorityType.FreezeAccount,null,[],TOKEN_PROGRAM_ID));
+    const bh=await connection.getLatestBlockhash('confirmed');
+    tx.recentBlockhash=bh.blockhash; tx.feePayer=wallet; tx.partialSign(mint);
+    setStatus('createStatus','Revisa y firma la transacción en Phantom…');
+    const signed=await provider.signTransaction(tx);
+    const sig=await connection.sendRawTransaction(signed.serialize(),{skipPreflight:false,maxRetries:3});
+    await connection.confirmTransaction({signature:sig,blockhash:bh.blockhash,lastValidBlockHeight:bh.lastValidBlockHeight},'confirmed');
+    lastMint=mint.publicKey.toBase58(); lastTx=sig;
+    $('mintAddress').textContent=lastMint; $('txSig').textContent=lastTx;
+    $('explorerMint').href='https://explorer.solana.com/address/'+lastMint+'?cluster=devnet';
+    $('explorerTx').href='https://explorer.solana.com/tx/'+lastTx+'?cluster=devnet';
+    $('resultCard').classList.remove('hidden');
+    setStatus('createStatus','STRIKEX de prueba creado correctamente en Devnet.','ok');
+    await refresh();
+  }catch(e){
+    const m=e?.message||String(e);
+    setStatus('createStatus',m.includes('User rejected')?'Firma cancelada en Phantom.':'No se pudo crear el token: '+m,'err');
+    syncCreate();
+  }
+}
+
+$('connectBtn').onclick=connect;
+$('refreshBtn').onclick=refresh;
+$('airdropBtn').onclick=airdrop;
+$('createBtn').onclick=createToken;
+$('mismatchAck').onchange=syncCreate;
+$('copyMintBtn').onclick=()=>navigator.clipboard.writeText(lastMint);
+$('copyTxBtn').onclick=()=>navigator.clipboard.writeText(lastTx);
+$('openPhantomBtn').onclick=()=>{
+  const here=encodeURIComponent(location.href);
+  location.href='https://phantom.app/ul/browse/'+here+'?ref='+here;
+};
+</script>
+</body>
+</html>
